@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: taska
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/taskaDB
+    username: postgres
+    password: Vandersar7
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      open-in-view: false
+#      ddl-auto: create-drop
+
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+
+
+  jwt:
+    secret: 43d991ee20e30285cdf1179680c98e907245f80022bd6c8a375d42a941c052bc
+    expiration: 432000000
+
+
+springdoc:
+  swagger-ui:
+    path: /docs
