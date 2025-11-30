@@ -45,10 +45,14 @@ public class Task {
     @JsonIgnore
     private List<Subtask> subtasks;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Note> notes;
+
     public Task() {
     }
 
-    public Task(long id, String title, String description, Priority priority, LocalDate dueDate, boolean isCompleted, User user, Project project) {
+    public Task(long id, String title, String description, Priority priority, LocalDate dueDate, boolean isCompleted, User user, Project project, List<Subtask> subtasks, List<Note> notes) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -57,6 +61,8 @@ public class Task {
         this.isCompleted = isCompleted;
         this.user = user;
         this.project = project;
+        this.subtasks = subtasks;
+        this.notes = notes;
     }
 
     public long getId() {
@@ -121,6 +127,22 @@ public class Task {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public List<Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(List<Subtask> subtasks) {
+        this.subtasks = subtasks;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     @Override

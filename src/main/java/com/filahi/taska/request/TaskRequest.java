@@ -24,7 +24,7 @@ public record TaskRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate dueDate,
 
-        @Min(value = 1, message = "Project id must be greater or equal to 1")
+        @Min(value = 1, message = "Project ID must be greater or equal to 1")
         long projectId
 ) {
 }

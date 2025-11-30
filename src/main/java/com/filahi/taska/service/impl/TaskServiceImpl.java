@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,7 +67,9 @@ public class TaskServiceImpl implements TaskService {
                 taskRequest.dueDate(),
                 false,
                 user,
-                project
+                project,
+                new ArrayList<>(),
+                new ArrayList<>()
         );
 
         this.taskRepository.save(newTask);

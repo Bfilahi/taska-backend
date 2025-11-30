@@ -17,7 +17,8 @@ public class BuildTaskResponse {
                 task.getPriority(),
                 task.getDueDate(),
                 task.isCompleted(),
-                task.getProject().getId()
+                task.getProject().getId(),
+                task.getSubtasks().size()
         );
     }
 }

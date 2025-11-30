@@ -11,7 +11,7 @@ public record TaskResponse(
         Priority priority,
         LocalDate dueDate,
         boolean isCompleted,
-        long projectId
-//        long subtasks
+        long projectId,
+        long subtasks
 ) {
 }

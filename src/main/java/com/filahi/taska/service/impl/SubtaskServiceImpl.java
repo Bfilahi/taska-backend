@@ -45,6 +45,16 @@ public class SubtaskServiceImpl implements SubtaskService {
     }
 
     @Override
+    public SubtaskResponse getSubtask(User user, long subtaskId, long taskId) {
+        Task task = this.taskRepository.findById(taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+        Subtask subtask = this.subtaskRepository.findByUserAndTaskAndId(user, task, subtaskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
+
+        return buildSubtaskResponse(subtask);
+    }
+
+    @Override
     @Transactional
     public SubtaskResponse addNewSubtask(User user, SubtaskRequest subtaskRequest) {
         Task task = this.taskRepository.findById(subtaskRequest.taskId())

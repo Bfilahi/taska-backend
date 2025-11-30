@@ -10,7 +10,7 @@ public record ProjectResponse(
         String description,
         LocalDate dueDate,
         Priority priority,
-        boolean isCompleted
-//        int progress
+        boolean isCompleted,
+        int progress
 ) {
 }

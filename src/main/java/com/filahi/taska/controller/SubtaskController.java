@@ -34,11 +34,20 @@ public class SubtaskController {
         return this.subtaskService.getSubtaskByTaskId(page, size, user, taskId);
     }
 
+    @Operation(summary = "Get subtask", description = "Get a subtask given subtask ID and task ID")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/subtask/{subtaskId}")
+    public SubtaskResponse getSubtask(@AuthenticationPrincipal User user,
+                                      @PathVariable long subtaskId,
+                                      @RequestParam long taskId) {
+        return this.subtaskService.getSubtask(user, subtaskId, taskId);
+    }
+
     @Operation(summary = "Add new subtask for a given task", description = "Add new subtask for a given task to database")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/new-subtask")
     public SubtaskResponse addNewSubtask(@AuthenticationPrincipal User user,
-                                         @Valid SubtaskRequest subtaskRequest) {
+                                         @Valid @RequestBody SubtaskRequest subtaskRequest) {
         return this.subtaskService.addNewSubtask(user, subtaskRequest);
     }
 
@@ -46,7 +55,7 @@ public class SubtaskController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{subtaskId}")
     public SubtaskResponse updateSubtask(@AuthenticationPrincipal User user,
-                                         @Valid SubtaskRequest subtaskRequest,
+                                         @Valid @RequestBody SubtaskRequest subtaskRequest,
                                          @PathVariable long subtaskId) {
         return this.subtaskService.updateSubtask(user, subtaskRequest, subtaskId);
     }

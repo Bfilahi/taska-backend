@@ -1,10 +1,13 @@
 package com.filahi.taska.service.impl;
 
 import com.filahi.taska.entity.Project;
+import com.filahi.taska.entity.Task;
 import com.filahi.taska.entity.User;
 import com.filahi.taska.repository.ProjectRepository;
+import com.filahi.taska.repository.TaskRepository;
 import com.filahi.taska.request.ProjectRequest;
 import com.filahi.taska.response.ProjectResponse;
+import com.filahi.taska.response.ProjectStatsResponse;
 import com.filahi.taska.response.ProjectsStatsResponse;
 import com.filahi.taska.service.ProjectService;
 import com.filahi.taska.util.PageableUtil;
@@ -17,16 +20,19 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
     private final PageableUtil pageableUtil;
 
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, PageableUtil pageableUtil) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, TaskRepository taskRepository, PageableUtil pageableUtil) {
         this.projectRepository = projectRepository;
+        this.taskRepository = taskRepository;
         this.pageableUtil = pageableUtil;
     }
 
@@ -58,7 +64,8 @@ public class ProjectServiceImpl implements ProjectService {
                 LocalDate.now(),
                 false,
                 request.priority(),
-                user
+                user,
+                new ArrayList<>()
         );
         // Due date should be provided by the user.
         this.projectRepository.save(project);
@@ -104,6 +111,18 @@ public class ProjectServiceImpl implements ProjectService {
         return new ProjectsStatsResponse(numProjects, numCompletedProjects);
     }
 
+    @Override
+    public ProjectStatsResponse getProjectStats(User user, long projectId) {
+        long numTasks = this.taskRepository.countByUserAndProjectId(user, projectId);
+        long numCompletedTasks = this.taskRepository.countByUserAndProjectIdAndIsCompletedTrue(user, projectId);
+
+        return new ProjectStatsResponse(
+                numTasks,
+                numCompletedTasks,
+                0
+        );
+        // Fix tasksInProgress in ProjectStatsResponse
+    }
 
     private static ProjectResponse buildProjectsResponse(Project project) {
         return new ProjectResponse(
@@ -112,8 +131,17 @@ public class ProjectServiceImpl implements ProjectService {
                 project.getDescription(),
                 project.getDueDate(),
                 project.getPriority(),
-                project.isCompleted()
+                project.isCompleted(),
+                calculateProgress(project.getTasks())
         );
+    }
+
+    private static int calculateProgress(List<Task> tasks){
+        int totalTasks = tasks.size();
+        int completedTasks = tasks.stream().filter(Task::isCompleted).toList().size();
+        if(totalTasks == 0)
+            return 0;
+        return (int)((float) completedTasks / totalTasks) * 100;
     }
 
 }

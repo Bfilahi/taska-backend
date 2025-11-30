@@ -45,7 +45,7 @@ public class Project {
     public Project() {
     }
 
-    public Project(long id, String name, String description, LocalDate dueDate, boolean isCompleted, Priority priority, User user) {
+    public Project(long id, String name, String description, LocalDate dueDate, boolean isCompleted, Priority priority, User user, List<Task> tasks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -53,6 +53,7 @@ public class Project {
         this.isCompleted = isCompleted;
         this.priority = priority;
         this.user = user;
+        this.tasks = tasks;
     }
 
     public long getId() {
@@ -109,6 +110,14 @@ public class Project {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     @Override

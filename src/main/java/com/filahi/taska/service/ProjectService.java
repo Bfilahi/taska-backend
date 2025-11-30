@@ -15,5 +15,5 @@ public interface ProjectService {
     void deleteProject(User user, long projectId);
     Page<ProjectResponse> searchProjects(User user, String keyword, int page, int size);
     ProjectsStatsResponse getProjectsStats(User user);
-//    ProjectStatsResponse getProjectStats(User user, long projectId);
+    ProjectStatsResponse getProjectStats(User user, long projectId);
 }

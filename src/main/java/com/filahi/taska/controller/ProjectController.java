@@ -44,13 +44,13 @@ public class ProjectController {
         return this.projectService.getProjectsStats(user);
     }
 
-//    @Operation(summary = "Get project stats", description = "Retrieve project stats providing project ID")
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping("/stats/{projectId}")
-//    public ProjectStatsResponse getProjectStats(@AuthenticationPrincipal User user,
-//                                                @PathVariable long projectId){
-//        return this.projectService.getProjectStats(user, projectId);
-//    }
+    @Operation(summary = "Get project stats", description = "Retrieve project stats providing project ID")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/stats/{projectId}")
+    public ProjectStatsResponse getProjectStats(@AuthenticationPrincipal User user,
+                                                @PathVariable long projectId){
+        return this.projectService.getProjectStats(user, projectId);
+    }
 
     @Operation(summary = "Get a project", description = "Get a project provided project ID")
     @ResponseStatus(HttpStatus.OK)

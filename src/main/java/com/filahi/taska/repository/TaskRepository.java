@@ -14,7 +14,8 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> findAllByUserAndProjectId(User user, Long projectId, Pageable pageable);
-    Optional<Task> findByUserAndProject_IdAndId(User user, long projectId, Long id);
+    Optional<Task> findByUserAndProject_IdAndId(User user, long projectId, long taskId);
+    Optional<Task> findByUserAndId(User user, long taskId);
 
     @Query("""
         SELECT t FROM Task t WHERE (LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
@@ -23,4 +24,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
         """)
     Page<Task> findByKeyword(@Param("user") User user, @Param("keyword") String keyword, Pageable pageable);
 
+    long countByUserAndProjectId(User user, long projectId);
+    long countByUserAndProjectIdAndIsCompletedTrue(User user, long projectId);
 }
