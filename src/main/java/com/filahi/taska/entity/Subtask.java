@@ -3,6 +3,8 @@ package com.filahi.taska.entity;
 
 import com.filahi.taska.enumeration.Priority;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.Objects;
@@ -31,6 +33,13 @@ public class Subtask {
     @Column(nullable = false)
     private boolean isCompleted;
 
+    @Column(updatable = false, nullable = false)
+    @CreationTimestamp
+    private LocalDate createdAt;
+
+    @UpdateTimestamp
+    private LocalDate updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -42,13 +51,14 @@ public class Subtask {
     public Subtask() {
     }
 
-    public Subtask(long id, String title, String description, Priority priority, LocalDate dueDate, boolean isCompleted, User user, Task task) {
+    public Subtask(long id, String title, String description, Priority priority, LocalDate dueDate, boolean isCompleted, LocalDate createdAt, User user, Task task) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.dueDate = dueDate;
         this.isCompleted = isCompleted;
+        this.createdAt = createdAt;
         this.user = user;
         this.task = task;
     }
@@ -117,6 +127,22 @@ public class Subtask {
         this.task = task;
     }
 
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Subtask{" +
@@ -126,6 +152,8 @@ public class Subtask {
                 ", priority=" + priority +
                 ", dueDate=" + dueDate +
                 ", isCompleted=" + isCompleted +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 ", user=" + user +
                 ", task=" + task +
                 '}';
@@ -135,11 +163,11 @@ public class Subtask {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Subtask subtask = (Subtask) o;
-        return id == subtask.id && isCompleted == subtask.isCompleted && Objects.equals(title, subtask.title) && Objects.equals(description, subtask.description) && priority == subtask.priority && Objects.equals(dueDate, subtask.dueDate) && Objects.equals(user, subtask.user) && Objects.equals(task, subtask.task);
+        return id == subtask.id && isCompleted == subtask.isCompleted && Objects.equals(title, subtask.title) && Objects.equals(description, subtask.description) && priority == subtask.priority && Objects.equals(dueDate, subtask.dueDate) && Objects.equals(createdAt, subtask.createdAt) && Objects.equals(updatedAt, subtask.updatedAt) && Objects.equals(user, subtask.user) && Objects.equals(task, subtask.task);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, priority, dueDate, isCompleted, user, task);
+        return Objects.hash(id, title, description, priority, dueDate, isCompleted, createdAt, updatedAt, user, task);
     }
 }

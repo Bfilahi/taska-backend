@@ -25,7 +25,7 @@ public class NoteController {
 
     @Operation(summary = "Get all notes", description = "Get all tasks's notes")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{taskId}/notes")
+    @GetMapping("/{taskId}")
     public List<NoteResponse> getAllNotes(@AuthenticationPrincipal User user,
                                           @PathVariable long taskId) {
         return this.noteService.getAllNotes(user, taskId);
@@ -45,13 +45,13 @@ public class NoteController {
     @PostMapping("/note/{taskId}")
     public NoteResponse addNewNote(@AuthenticationPrincipal User user,
                                    @PathVariable long taskId,
-                                   @RequestParam String note){
+                                   @RequestBody String note){
         return this.noteService.addNewNote(user, taskId, note);
     }
 
     @Operation(summary = "Delete a note", description = "Delete a note given note ID and task ID")
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/task/{noteId}")
+    @DeleteMapping("/note/{noteId}")
     public void deleteNote(@AuthenticationPrincipal User user,
                            @PathVariable long noteId,
                            @RequestParam long taskId) {

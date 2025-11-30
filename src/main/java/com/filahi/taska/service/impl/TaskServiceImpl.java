@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,7 @@ public class TaskServiceImpl implements TaskService {
                 taskRequest.priority(),
                 taskRequest.dueDate(),
                 false,
+                LocalDate.now(),
                 user,
                 project,
                 new ArrayList<>(),

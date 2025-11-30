@@ -1,7 +1,10 @@
 package com.filahi.taska.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 
@@ -15,6 +18,13 @@ public class Note {
     @Column(nullable = false)
     private String note;
 
+    @Column(updatable = false, nullable = false)
+    @CreationTimestamp
+    private LocalDate createdAt;
+
+    @UpdateTimestamp
+    private LocalDate updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -26,9 +36,10 @@ public class Note {
     public Note() {
     }
 
-    public Note(long id, String note, User user, Task task) {
+    public Note(long id, String note, LocalDate createdAt, User user, Task task) {
         this.id = id;
         this.note = note;
+        this.createdAt = createdAt;
         this.user = user;
         this.task = task;
     }
@@ -65,11 +76,29 @@ public class Note {
         this.task = task;
     }
 
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
                 "id=" + id +
                 ", note='" + note + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 ", user=" + user +
                 ", task=" + task +
                 '}';
@@ -79,11 +108,11 @@ public class Note {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Note note1 = (Note) o;
-        return id == note1.id && Objects.equals(note, note1.note) && Objects.equals(user, note1.user) && Objects.equals(task, note1.task);
+        return id == note1.id && Objects.equals(note, note1.note) && Objects.equals(createdAt, note1.createdAt) && Objects.equals(updatedAt, note1.updatedAt) && Objects.equals(user, note1.user) && Objects.equals(task, note1.task);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, note, user, task);
+        return Objects.hash(id, note, createdAt, updatedAt, user, task);
     }
 }

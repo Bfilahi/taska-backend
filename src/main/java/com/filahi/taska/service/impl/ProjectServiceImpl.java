@@ -61,8 +61,9 @@ public class ProjectServiceImpl implements ProjectService {
                 0,
                 request.name(),
                 request.description(),
-                LocalDate.now(),
+                LocalDate.now(), // the user should provide this.
                 false,
+                LocalDate.now(),
                 request.priority(),
                 user,
                 new ArrayList<>()

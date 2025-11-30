@@ -4,6 +4,8 @@ package com.filahi.taska.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.filahi.taska.enumeration.Priority;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,6 +32,13 @@ public class Project {
     @Column(nullable = false)
     private boolean isCompleted;
 
+    @Column(updatable = false, nullable = false)
+    @CreationTimestamp
+    private LocalDate createdAt;
+
+    @UpdateTimestamp
+    private LocalDate updatedAt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Priority priority;
@@ -45,12 +54,13 @@ public class Project {
     public Project() {
     }
 
-    public Project(long id, String name, String description, LocalDate dueDate, boolean isCompleted, Priority priority, User user, List<Task> tasks) {
+    public Project(long id, String name, String description, LocalDate dueDate, boolean isCompleted, LocalDate createdAt, Priority priority, User user, List<Task> tasks) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;
         this.isCompleted = isCompleted;
+        this.createdAt = createdAt;
         this.priority = priority;
         this.user = user;
         this.tasks = tasks;
@@ -120,6 +130,22 @@ public class Project {
         this.tasks = tasks;
     }
 
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDate createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDate getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDate updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "Project{" +
@@ -128,8 +154,11 @@ public class Project {
                 ", description='" + description + '\'' +
                 ", dueDate=" + dueDate +
                 ", isCompleted=" + isCompleted +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 ", priority=" + priority +
                 ", user=" + user +
+                ", tasks=" + tasks +
                 '}';
     }
 
@@ -137,11 +166,11 @@ public class Project {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Project project = (Project) o;
-        return id == project.id && isCompleted == project.isCompleted && Objects.equals(name, project.name) && Objects.equals(description, project.description) && Objects.equals(dueDate, project.dueDate) && priority == project.priority && Objects.equals(user, project.user);
+        return id == project.id && isCompleted == project.isCompleted && Objects.equals(name, project.name) && Objects.equals(description, project.description) && Objects.equals(dueDate, project.dueDate) && Objects.equals(createdAt, project.createdAt) && Objects.equals(updatedAt, project.updatedAt) && priority == project.priority && Objects.equals(user, project.user) && Objects.equals(tasks, project.tasks);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, dueDate, isCompleted, priority, user);
+        return Objects.hash(id, name, description, dueDate, isCompleted, createdAt, updatedAt, priority, user, tasks);
     }
 }
