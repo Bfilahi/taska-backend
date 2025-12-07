@@ -1,6 +1,7 @@
 package com.filahi.taska.request;
 
 import com.filahi.taska.enumeration.Priority;
+import com.filahi.taska.enumeration.Status;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,6 +20,8 @@ public record SubtaskRequest(
         String description,
 
         Priority priority,
+
+        Status status,
 
         @FutureOrPresent(message = "Due date must be today or in the future")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)

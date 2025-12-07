@@ -16,4 +16,5 @@ public interface ProjectService {
     Page<ProjectResponse> searchProjects(User user, String keyword, int page, int size);
     ProjectsStatsResponse getProjectsStats(User user);
     ProjectStatsResponse getProjectStats(User user, long projectId);
+    Page<ProjectResponse> getOverdueProjects(int page, int size, User user);
 }

@@ -1,8 +1,10 @@
 package com.filahi.taska.service.impl;
 
 import com.filahi.taska.entity.Project;
+import com.filahi.taska.entity.Subtask;
 import com.filahi.taska.entity.Task;
 import com.filahi.taska.entity.User;
+import com.filahi.taska.enumeration.Status;
 import com.filahi.taska.repository.ProjectRepository;
 import com.filahi.taska.repository.TaskRepository;
 import com.filahi.taska.request.ProjectRequest;
@@ -61,14 +63,13 @@ public class ProjectServiceImpl implements ProjectService {
                 0,
                 request.name(),
                 request.description(),
-                LocalDate.now(), // the user should provide this.
-                false,
+                request.dueDate(),
+                Status.ACTIVE,
                 LocalDate.now(),
                 request.priority(),
                 user,
                 new ArrayList<>()
         );
-        // Due date should be provided by the user.
         this.projectRepository.save(project);
         return buildProjectsResponse(project);
     }
@@ -82,6 +83,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setDescription(request.description());
         project.setDueDate(request.dueDate());
         project.setPriority(request.priority());
+        project.setStatus(request.status());
 
         this.projectRepository.save(project);
         return buildProjectsResponse(project);
@@ -107,22 +109,32 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectsStatsResponse getProjectsStats(User user) {
         long numProjects = this.projectRepository.countByUser(user);
-        long numCompletedProjects = this.projectRepository.countByUserAndIsCompletedTrue(user);
-
-        return new ProjectsStatsResponse(numProjects, numCompletedProjects);
+        long numCompletedProjects = this.projectRepository.countByUserAndStatus(user, Status.COMPLETED);
+        long numOverdueProjects = this.projectRepository.countByUserAndStatusAndDueDateBefore(user, Status.ACTIVE, LocalDate.now());
+        return new ProjectsStatsResponse(numProjects, numCompletedProjects, numOverdueProjects);
     }
 
     @Override
     public ProjectStatsResponse getProjectStats(User user, long projectId) {
-        long numTasks = this.taskRepository.countByUserAndProjectId(user, projectId);
-        long numCompletedTasks = this.taskRepository.countByUserAndProjectIdAndIsCompletedTrue(user, projectId);
+        long numTasks = this.taskRepository.countByUserAndProject_Id(user, projectId);
+        long numCompletedTasks = this.taskRepository.countByUserAndProject_IdAndStatus(user, projectId, Status.COMPLETED);
+        long numOverdueTasks = this.taskRepository.countByUserAndProject_IdAndStatusAndDueDateBefore(user, projectId, Status.ACTIVE, LocalDate.now());
+        long numInProgressTasks = numTasks - numCompletedTasks - numOverdueTasks;
 
         return new ProjectStatsResponse(
                 numTasks,
                 numCompletedTasks,
-                0
+                numInProgressTasks,
+                numOverdueTasks
         );
-        // Fix tasksInProgress in ProjectStatsResponse
+    }
+
+    @Override
+    public Page<ProjectResponse> getOverdueProjects(int page, int size, User user) {
+        Pageable pageable = this.pageableUtil.getPageable(page, size, "", "");
+        Page<Project> projects = this.projectRepository.findByUserAndStatusAndDueDateBefore(user, Status.ACTIVE, LocalDate.now(), pageable);
+        List<ProjectResponse> projectResponses = projects.stream().map(ProjectServiceImpl::buildProjectsResponse).toList();
+        return new PageImpl<>(projectResponses, pageable, projects.getTotalElements());
     }
 
     private static ProjectResponse buildProjectsResponse(Project project) {
@@ -130,19 +142,34 @@ public class ProjectServiceImpl implements ProjectService {
                 project.getId(),
                 project.getName(),
                 project.getDescription(),
+                project.getCreatedAt(),
                 project.getDueDate(),
                 project.getPriority(),
-                project.isCompleted(),
+                project.getStatus(),
                 calculateProgress(project.getTasks())
         );
     }
 
     private static int calculateProgress(List<Task> tasks){
-        int totalTasks = tasks.size();
-        int completedTasks = tasks.stream().filter(Task::isCompleted).toList().size();
-        if(totalTasks == 0)
+        if(tasks == null || tasks.isEmpty())
             return 0;
-        return (int)((float) completedTasks / totalTasks) * 100;
-    }
 
+        int totalWork = 0;
+        int completedWork = 0;
+
+        for(Task task : tasks){
+            List<Subtask> subtasks = task.getSubtasks();
+
+            if(subtasks == null || subtasks.isEmpty()){
+                totalWork++;
+                if(task.getStatus().equals(Status.COMPLETED))
+                    completedWork++;
+            }
+            else{
+                totalWork += subtasks.size();
+                completedWork += (int) subtasks.stream().filter(st -> st.getStatus().equals(Status.COMPLETED)).count();
+            }
+        }
+        return totalWork == 0 ? 0 : (int) ((completedWork * 100.0) / totalWork);
+    }
 }

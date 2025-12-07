@@ -1,6 +1,7 @@
 package com.filahi.taska.request;
 
 import com.filahi.taska.enumeration.Priority;
+import com.filahi.taska.enumeration.Status;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -21,6 +22,8 @@ public record ProjectRequest(
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate dueDate,
 
-        Priority priority
+        Priority priority,
+
+        Status status
 ) {
 }

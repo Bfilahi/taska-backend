@@ -2,6 +2,7 @@ package com.filahi.taska.response;
 
 public record ProjectsStatsResponse(
         long totalProjects,
-        long completedProjects
+        long completedProjects,
+        long overdueProjects
 ) {
 }

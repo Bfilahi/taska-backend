@@ -3,12 +3,14 @@ package com.filahi.taska.service.impl;
 import com.filahi.taska.entity.Subtask;
 import com.filahi.taska.entity.Task;
 import com.filahi.taska.entity.User;
+import com.filahi.taska.enumeration.Status;
 import com.filahi.taska.repository.SubtaskRepository;
 import com.filahi.taska.repository.TaskRepository;
 import com.filahi.taska.request.SubtaskRequest;
 import com.filahi.taska.response.SubtaskResponse;
 import com.filahi.taska.service.SubtaskService;
 import com.filahi.taska.util.PageableUtil;
+import com.filahi.taska.util.ProjectTaskCompletion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,11 +28,13 @@ public class SubtaskServiceImpl implements SubtaskService {
     private final SubtaskRepository subtaskRepository;
     private final TaskRepository taskRepository;
     private final PageableUtil pageableUtil;
+    private final ProjectTaskCompletion projectTaskCompletion;
 
-    public SubtaskServiceImpl(SubtaskRepository subtaskRepository, TaskRepository taskRepository, PageableUtil pageableUtil) {
+    public SubtaskServiceImpl(SubtaskRepository subtaskRepository, TaskRepository taskRepository, PageableUtil pageableUtil, ProjectTaskCompletion projectTaskCompletion) {
         this.subtaskRepository = subtaskRepository;
         this.taskRepository = taskRepository;
         this.pageableUtil = pageableUtil;
+        this.projectTaskCompletion = projectTaskCompletion;
     }
 
 
@@ -67,13 +71,15 @@ public class SubtaskServiceImpl implements SubtaskService {
                 subtaskRequest.description(),
                 subtaskRequest.priority(),
                 subtaskRequest.dueDate(),
-                false,
+                Status.ACTIVE,
                 LocalDate.now(),
                 user,
                 task
         );
 
         this.subtaskRepository.save(subtask);
+        this.projectTaskCompletion.handleTaskCompletion(task);
+        this.projectTaskCompletion.handleProjectCompletion(task.getProject());
         return buildSubtaskResponse(subtask);
     }
 
@@ -89,21 +95,42 @@ public class SubtaskServiceImpl implements SubtaskService {
         subtask.setTitle(subtaskRequest.title());
         subtask.setDescription(subtaskRequest.description());
         subtask.setPriority(subtaskRequest.priority());
+        subtask.setStatus(subtaskRequest.status());
         subtask.setDueDate(subtaskRequest.dueDate());
         subtask.setTask(task);
 
         this.subtaskRepository.save(subtask);
+        this.projectTaskCompletion.handleTaskCompletion(task);
+        this.projectTaskCompletion.handleProjectCompletion(task.getProject());
         return buildSubtaskResponse(subtask);
     }
 
     @Override
     @Transactional
     public void deleteSubtask(User user, long subtaskId, long taskId) {
-        Task task = this.taskRepository.findById(taskId)
+        Task task = this.taskRepository.findByUserAndId(user, taskId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
         Subtask subtask = this.subtaskRepository.findByUserAndTaskAndId(user, task, subtaskId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
         subtaskRepository.delete(subtask);
+    }
+
+    @Override
+    public SubtaskResponse toggleSubtaskCompletion(User user, long subtaskId, long taskId) {
+        Task task = this.taskRepository.findByUserAndId(user, taskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
+        Subtask subtask = this.subtaskRepository.findByUserAndTaskAndId(user, task, subtaskId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subtask not found"));
+
+        if(subtask.getStatus().equals(Status.ACTIVE))
+            subtask.setStatus(Status.COMPLETED);
+        else
+            subtask.setStatus(Status.ACTIVE);
+
+        this.subtaskRepository.save(subtask);
+        this.projectTaskCompletion.handleTaskCompletion(task);
+        this.projectTaskCompletion.handleProjectCompletion(task.getProject());
+        return buildSubtaskResponse(subtask);
     }
 
 
@@ -113,8 +140,8 @@ public class SubtaskServiceImpl implements SubtaskService {
                 subtask.getTitle(),
                 subtask.getDescription(),
                 subtask.getPriority(),
+                subtask.getStatus(),
                 subtask.getDueDate(),
-                subtask.isCompleted(),
                 subtask.getTask().getId()
         );
     }

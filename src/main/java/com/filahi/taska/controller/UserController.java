@@ -2,6 +2,8 @@ package com.filahi.taska.controller;
 
 
 import com.filahi.taska.entity.User;
+import com.filahi.taska.request.PasswordRequest;
+import com.filahi.taska.request.UserRequest;
 import com.filahi.taska.response.UserResponse;
 import com.filahi.taska.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +28,22 @@ public class UserController {
     @GetMapping("/info")
     public UserResponse getUserInfo(@AuthenticationPrincipal User user) {
         return userService.getUserInfo(user);
+    }
+
+    @Operation(summary = "Update user information", description = "Update authenticated user's information")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/profile-update")
+    public void updateProfile(@AuthenticationPrincipal User user,
+                                      @RequestBody UserRequest userRequest) {
+        this.userService.updateProfile(user, userRequest);
+    }
+
+    @Operation(summary = "Update user password", description = "Update authenticated user's password")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/password-update")
+    public void updatePassword(@AuthenticationPrincipal User user,
+                               @RequestBody PasswordRequest passwordRequest) {
+        this.userService.updatePassword(user, passwordRequest);
     }
 
     @Operation(summary = "Delete user", description = "Delete authenticated user from database")

@@ -9,8 +9,6 @@ import com.filahi.taska.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,7 +31,7 @@ public class ProjectController {
     @GetMapping
     public Page<ProjectResponse> getAllProjects(@AuthenticationPrincipal User user,
                                                 @RequestParam(required = false, defaultValue = "0") int page,
-                                                @RequestParam(required = false, defaultValue = "7") int size){
+                                                @RequestParam(required = false, defaultValue = "5") int size){
         return this.projectService.getAllProjects(page, size, user);
     }
 
@@ -55,9 +53,18 @@ public class ProjectController {
     @Operation(summary = "Get a project", description = "Get a project provided project ID")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/project/{projectId}")
-    public ProjectResponse getProjectById(@PathVariable long projectId,
-                                          @AuthenticationPrincipal User user){
+    public ProjectResponse getProjectById(@AuthenticationPrincipal User user,
+                                          @PathVariable long projectId){
         return this.projectService.getProjectById(user, projectId);
+    }
+
+    @Operation(summary = "Get overdue projects", description = "Retrieve overdue projects")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/p-overdue")
+    public Page<ProjectResponse> getOverdueProjects(@AuthenticationPrincipal User user,
+                                                    @RequestParam(required = false, defaultValue = "0") int page,
+                                                    @RequestParam(required = false, defaultValue = "5") int size){
+        return this.projectService.getOverdueProjects(page, size, user);
     }
 
     @Operation(summary = "Add new project", description = "Add new project to database")
@@ -91,7 +98,7 @@ public class ProjectController {
     public Page<ProjectResponse> searchProjects(@PathVariable String keyword,
                                                 @AuthenticationPrincipal User user,
                                                 @RequestParam(defaultValue = "0") int page,
-                                                @RequestParam(defaultValue = "7") int size){
+                                                @RequestParam(defaultValue = "5") int size){
         return this.projectService.searchProjects(user, keyword, page, size);
     }
 }

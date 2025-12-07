@@ -67,8 +67,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 registerRequest.lastName(),
                 registerRequest.email(),
                 this.passwordEncoder.encode(registerRequest.password()),
-                "https://ui-avatars.com/api/?name=" + registerRequest.firstName() +
-                "+" + registerRequest.lastName() + "&background=random&color=random",
                 getAuthorities());
     }
 

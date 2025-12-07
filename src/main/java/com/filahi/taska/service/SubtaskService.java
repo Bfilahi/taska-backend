@@ -11,4 +11,5 @@ public interface SubtaskService {
     SubtaskResponse addNewSubtask(User user, SubtaskRequest subTaskRequest);
     SubtaskResponse updateSubtask(User user, SubtaskRequest subTaskRequest, long subtaskId);
     void deleteSubtask(User user, long subtaskId, long taskId);
+    SubtaskResponse toggleSubtaskCompletion(User user, long subtaskId, long taskId);
 }

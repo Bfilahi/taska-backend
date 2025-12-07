@@ -28,7 +28,7 @@ public class SubtaskController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{taskId}/subtasks")
     public Page<SubtaskResponse> getSubtaskByTaskId(@RequestParam(defaultValue = "0") int page,
-                                                    @RequestParam(defaultValue = "7") int size,
+                                                    @RequestParam(defaultValue = "5") int size,
                                                     @AuthenticationPrincipal User user,
                                                     @PathVariable long taskId) {
         return this.subtaskService.getSubtaskByTaskId(page, size, user, taskId);
@@ -67,5 +67,14 @@ public class SubtaskController {
                               @PathVariable long subtaskId,
                               @RequestParam long taskId) {
         this.subtaskService.deleteSubtask(user, subtaskId, taskId);
+    }
+
+    @Operation(summary = "Toggle subtask", description = "Toggle subtask completion")
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/toggle/{subtaskId}")
+    public SubtaskResponse toggleSubtaskCompletion(@AuthenticationPrincipal User user,
+                                                   @PathVariable long subtaskId,
+                                                   @RequestParam long taskId) {
+        return this.subtaskService.toggleSubtaskCompletion(user, subtaskId, taskId);
     }
 }

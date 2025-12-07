@@ -1,14 +1,12 @@
 package com.filahi.taska.controller;
 
 import com.filahi.taska.entity.User;
-import com.filahi.taska.enumeration.Priority;
 import com.filahi.taska.request.TaskRequest;
 import com.filahi.taska.response.TaskResponse;
 import com.filahi.taska.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,10 +28,9 @@ public class TaskController {
     public Page<TaskResponse> getAllTasks(@AuthenticationPrincipal User user,
                                           @PathVariable long projectId,
                                           @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "7") int size) {
+                                          @RequestParam(defaultValue = "5") int size) {
         return this.taskService.getAllTasks(user, projectId, page, size);
     }
-    // Instead of getAllTasks(), you should have a getTasksForProject().
 
     @Operation(summary = "Get a task", description = "Get a task by id")
     @ResponseStatus(HttpStatus.OK)
@@ -42,6 +39,16 @@ public class TaskController {
                                     @RequestParam long projectId,
                                     @AuthenticationPrincipal User user) {
         return this.taskService.getTaskById(taskId, projectId, user);
+    }
+
+    @Operation(summary = "Get overdue tasks", description = "Retrieve overdue tasks")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/t-overdue/{projectId}")
+    public Page<TaskResponse> getOverdueTasks(@AuthenticationPrincipal User user,
+                                              @PathVariable long projectId,
+                                              @RequestParam(required = false, defaultValue = "0") int page,
+                                              @RequestParam(required = false, defaultValue = "5") int size){
+        return this.taskService.getOverdueTasks(page, size, user, projectId);
     }
 
     @Operation(summary = "Add new task", description = "Add new task to the database")
@@ -76,17 +83,16 @@ public class TaskController {
     public Page<TaskResponse> searchTasks(@AuthenticationPrincipal User user,
                                           @PathVariable String keyword,
                                           @RequestParam(defaultValue = "0") int page,
-                                          @RequestParam(defaultValue = "7") int size){
+                                          @RequestParam(defaultValue = "5") int size){
         return this.taskService.searchTasks(user, keyword, page, size);
     }
 
-    @Operation(summary = "Update task priority", description = "Set the priority level for a task")
+    @Operation(summary = "Toggle task", description = "Toggle task completion")
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/{taskId}/priority")
-    public TaskResponse updatePriority(@AuthenticationPrincipal User user,
-                                       @PathVariable long taskId,
-                                       @RequestParam long projectId,
-                                       @RequestParam Priority priority){
-        return this.taskService.updatePriority(user, taskId, projectId, priority);
+    @PostMapping("/toggle/{taskId}")
+    public TaskResponse toggleTaskCompletion(@AuthenticationPrincipal User user,
+                                             @PathVariable long taskId,
+                                             @RequestParam long projectId) {
+        return this.taskService.toggleTaskCompletion(user, taskId, projectId);
     }
 }

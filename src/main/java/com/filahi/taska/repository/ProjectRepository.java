@@ -2,6 +2,7 @@ package com.filahi.taska.repository;
 
 import com.filahi.taska.entity.Project;
 import com.filahi.taska.entity.User;
+import com.filahi.taska.enumeration.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
@@ -22,10 +24,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             OR LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
     """)
     Page<Project> searchByKeyword(@Param("user") User user, @Param("keyword") String keyword, Pageable pageable);
-
-
-
+    Page<Project> findByUserAndStatusAndDueDateBefore(User user, Status status, LocalDate dueDate, Pageable pageable);
 
     long countByUser(User user);
-    long countByUserAndIsCompletedTrue(User user);
+    long countByUserAndStatus(User user, Status status);
+    long countByUserAndStatusAndDueDateBefore(User user, Status status, LocalDate dueDate);
 }

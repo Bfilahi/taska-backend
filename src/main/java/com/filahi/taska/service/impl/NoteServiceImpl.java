@@ -29,7 +29,7 @@ public class NoteServiceImpl implements NoteService {
         Task task = this.taskRepository.findByUserAndId(user, taskId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
-        return task.getNotes().stream().map(note -> new NoteResponse(note.getId(), note.getNote())).toList();
+        return task.getNotes().stream().map(note -> new NoteResponse(note.getId(), note.getNote(), note.getCreatedAt())).toList();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class NoteServiceImpl implements NoteService {
         Note note = this.noteRepository.findByTaskAndId(task, noteId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found"));
 
-        return new NoteResponse(note.getId(), note.getNote());
+        return new NoteResponse(note.getId(), note.getNote(), note.getCreatedAt());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class NoteServiceImpl implements NoteService {
         );
 
         this.noteRepository.save(newNote);
-        return new NoteResponse(newNote.getId(), newNote.getNote());
+        return new NoteResponse(newNote.getId(), newNote.getNote(), newNote.getCreatedAt());
     }
 
     @Override

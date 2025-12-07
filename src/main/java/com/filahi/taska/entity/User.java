@@ -33,9 +33,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String profileImage;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime  createdAt;
@@ -58,13 +55,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(long id, String firstName, String lastName, String email, String password, String profileImage, List<Authority> authorities) {
+    public User(long id, String firstName, String lastName, String email, String password, List<Authority> authorities) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.profileImage = profileImage;
         this.authorities = authorities;
     }
 
@@ -97,7 +93,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
-
 
     public long getId() {
         return id;
@@ -133,14 +128,6 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -192,7 +179,6 @@ public class User implements UserDetails {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", profileImage='" + profileImage + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", authorities=" + authorities +
@@ -203,11 +189,11 @@ public class User implements UserDetails {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profileImage, user.profileImage) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(authorities, user.authorities);
+        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(authorities, user.authorities);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, email, password, profileImage, createdAt, updatedAt, authorities);
+        return Objects.hash(id, firstName, lastName, email, password, createdAt, updatedAt, authorities);
     }
 }
