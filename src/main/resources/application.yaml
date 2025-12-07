@@ -5,8 +5,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/taskaDB
-    username: postgres
-    password: Vandersar7
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -14,7 +14,7 @@ spring:
       open-in-view: false
 
   jwt:
-    secret: 43d991ee20e30285cdf1179680c98e907245f80022bd6c8a375d42a941c052bc
+    secret: ${JWT_SECRET}
     expiration: 432000000
 
 
