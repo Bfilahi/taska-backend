@@ -4,7 +4,7 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/taskaDB
+    url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
@@ -16,7 +16,6 @@ spring:
   jwt:
     secret: ${JWT_SECRET}
     expiration: 432000000
-
 
 springdoc:
   swagger-ui:
