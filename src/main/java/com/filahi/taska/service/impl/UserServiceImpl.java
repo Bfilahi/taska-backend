@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updateProfile(User user, UserRequest userRequest) {
         user.setFirstName(userRequest.firstName());
         user.setLastName(userRequest.lastName());
@@ -51,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(User user, PasswordRequest passwordRequest) {
         if(!isOldPasswordValid(user.getPassword(), passwordRequest.oldPassword()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Old password is invalid");

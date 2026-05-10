@@ -1,3 +1,6 @@
+server:
+  port: 1500
+
 spring:
   application:
     name: taska
