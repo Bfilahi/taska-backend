@@ -112,7 +112,7 @@ public class TaskServiceTest {
         assertEquals(2, result.getTotalElements(), "Result should have 2 elements");
     }
 
-    @DisplayName("Get all tasks test, not tasks exist test")
+    @DisplayName("Get all tasks test, no tasks exist test")
     @Test
     public void getAllTasksNoTasksExistTest(){
         Page<Task> tasks = new PageImpl<>(List.of(), pageable, 0);
@@ -312,7 +312,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should throw an exception when task is not found")
     @Test
-    void updateTaskTaskNotFoundThrowsNotFound(){
+    public void updateTaskTaskNotFoundThrowsNotFound(){
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
@@ -323,7 +323,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should throw an exception when new project is not found")
     @Test
-    void updateTaskProjectNotFoundThrowsNotFound(){
+    public void updateTaskProjectNotFoundThrowsNotFound(){
         Task task = buildMockTask(1);
 
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID)).thenReturn(Optional.of(task));
@@ -337,7 +337,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should call handleProjectCompletion even when project does not change")
     @Test
-    void updateTaskSameProjectCallsHandleProjectCompletion(){
+    public void updateTaskSameProjectCallsHandleProjectCompletion(){
         Task task = buildMockTask(1);
 
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID)).thenReturn(Optional.of(task));
@@ -351,7 +351,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should delete task when request is valid")
     @Test
-    void deleteTaskSuccess(){
+    public void deleteTaskSuccess(){
         Task task = buildMockTask(1);
 
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID)).thenReturn(Optional.of(task));
@@ -363,7 +363,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should throw an exception when task is not found")
     @Test
-    void deleteTaskTaskNotFoundThrowsNotFound(){
+    public void deleteTaskTaskNotFoundThrowsNotFound(){
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
 
@@ -374,7 +374,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should return page of task responses when tasks match keyword")
     @Test
-    void searchTasksSuccess(){
+    public void searchTasksSuccess(){
         Task task1 = buildMockTask(1);
         Task task2 = buildMockTask(2);
 
@@ -405,7 +405,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should return page with correct pageable and total elements")
     @Test
-    void searchTasksReturnsCorrectPageMetadata(){
+    public void searchTasksReturnsCorrectPageMetadata(){
         Task task1 = buildMockTask(1);
         Task task2 = buildMockTask(2);
 
@@ -422,7 +422,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should map each task to a task response")
     @Test
-    void searchTasksMapsEachTaskToTaskResponse(){
+    public void searchTasksMapsEachTaskToTaskResponse(){
         Task task1 = buildMockTask(1);
         Task task2 = buildMockTask(2);
 
@@ -440,7 +440,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should toggle task from ACTIVE to COMPLETED successfully")
     @Test
-    void toggleTaskCompletionActiveToCompletedSuccess(){
+    public void toggleTaskCompletionActiveToCompletedSuccess(){
         Task task = buildMockTask(1);
         task.setStatus(Status.ACTIVE);
 
@@ -454,7 +454,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should toggle task from COMPLETED to ACTIVE successfully")
     @Test
-    void toggleTaskCompletionCompletedToActiveSuccess(){
+    public void toggleTaskCompletionCompletedToActiveSuccess(){
         Task task = buildMockTask(1);
         task.setStatus(Status.ACTIVE);
 
@@ -468,7 +468,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should throw an exception when project is not found")
     @Test
-    void toggleTaskCompletionProjectNotFoundThrowsNotFound(){
+    public void toggleTaskCompletionProjectNotFoundThrowsNotFound(){
         when(projectRepository.findByUserAndId(user, PROJECT_ID))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Project not found"));
 
@@ -479,7 +479,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should throw an exception when task is not found")
     @Test
-    void toggleTaskCompletionTaskNotFoundThrowsNotFound(){
+    public void toggleTaskCompletionTaskNotFoundThrowsNotFound(){
         when(projectRepository.findByUserAndId(user, PROJECT_ID)).thenReturn(Optional.of(project));
         when(taskRepository.findByUserAndProject_IdAndId(user, PROJECT_ID, TASK_ID))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));
@@ -491,7 +491,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should call handleProjectCompletion with the correct project")
     @Test
-    void toggleTaskCompletionCallsHandleProjectCompletionWithCorrectProject(){
+    public void toggleTaskCompletionCallsHandleProjectCompletionWithCorrectProject(){
         Task task = buildMockTask(1);
         task.setStatus(Status.ACTIVE);
 
