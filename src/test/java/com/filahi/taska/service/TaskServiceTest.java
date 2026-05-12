@@ -391,7 +391,7 @@ public class TaskServiceTest {
 
     @DisplayName("Should return empty page when no tasks match keyword")
     @Test
-    void searchTasksNoResultsReturnsEmptyPage(){
+    public void searchTasksNoResultsReturnsEmptyPage(){
         Page<Task> tasks = new PageImpl<>(List.of(), pageable, 0);
 
         when(pageableUtil.getPageable(PAGE, SIZE, "", "")).thenReturn(pageable);

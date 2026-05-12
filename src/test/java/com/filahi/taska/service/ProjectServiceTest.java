@@ -238,7 +238,7 @@ public class ProjectServiceTest {
 
     @DisplayName("Should return empty page when no projects match keyword")
     @Test
-    void searchProjectsNoResultsReturnsEmptyPage(){
+    public void searchProjectsNoResultsReturnsEmptyPage(){
         Page<Project> projects = new PageImpl<>(List.of(), pageable, 0);
 
         when(pageableUtil.getPageable(PAGE, SIZE, "", "")).thenReturn(pageable);
@@ -287,7 +287,7 @@ public class ProjectServiceTest {
 
     @DisplayName("Returns correct stats when user has projects")
     @Test
-    void returnsCorrectStatsWhenUserHasProjects() {
+    public void returnsCorrectStatsWhenUserHasProjects() {
         when(projectRepository.countByUser(user)).thenReturn(3L);
         when(projectRepository.countByUserAndStatus(user, Status.COMPLETED)).thenReturn(2L);
         when(projectRepository.countByUserAndStatusAndDueDateBefore(user, Status.ACTIVE, LocalDate.now())).thenReturn(1L);
@@ -301,7 +301,7 @@ public class ProjectServiceTest {
 
     @Test
     @DisplayName("Returns all zeros when user has no projects")
-    void returnsAllZerosWhenUserHasNoProjects() {
+    public void returnsAllZerosWhenUserHasNoProjects() {
         when(projectRepository.countByUser(user)).thenReturn(0L);
         when(projectRepository.countByUserAndStatus(user, Status.COMPLETED)).thenReturn(0L);
         when(projectRepository.countByUserAndStatusAndDueDateBefore(user, Status.ACTIVE, LocalDate.now())).thenReturn(0L);
@@ -315,7 +315,7 @@ public class ProjectServiceTest {
 
     @Test
     @DisplayName("Returns correct stats when user has tasks in project")
-    void returnsCorrectStatsWhenUserHasTasksInProject() {
+    public void returnsCorrectStatsWhenUserHasTasksInProject() {
         when(taskRepository.countByUserAndProject_Id(user, PROJECT_ID)).thenReturn(3L);
         when(taskRepository.countByUserAndProject_IdAndStatus(user, PROJECT_ID, Status.COMPLETED)).thenReturn(2L);
         when(taskRepository.countByUserAndProject_IdAndStatusAndDueDateBefore(user, PROJECT_ID, Status.ACTIVE, LocalDate.now())).thenReturn(1L);
@@ -329,7 +329,7 @@ public class ProjectServiceTest {
 
     @Test
     @DisplayName("Returns all zeros when user has no tasks in project")
-    void returnsAllZerosWhenUserHasNoTasksInProject() {
+    public void returnsAllZerosWhenUserHasNoTasksInProject() {
         when(taskRepository.countByUserAndProject_Id(user, PROJECT_ID)).thenReturn(0L);
         when(taskRepository.countByUserAndProject_IdAndStatus(user, PROJECT_ID, Status.COMPLETED)).thenReturn(0L);
         when(taskRepository.countByUserAndProject_IdAndStatusAndDueDateBefore(user, PROJECT_ID, Status.ACTIVE, LocalDate.now())).thenReturn(0L);
