@@ -1,6 +1,7 @@
 package com.filahi.taska.controller;
 
 
+import com.filahi.taska.entity.Task;
 import com.filahi.taska.enumeration.Priority;
 import com.filahi.taska.enumeration.Status;
 import com.filahi.taska.request.TaskRequest;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import tools.jackson.databind.ObjectMapper;
 
@@ -32,16 +34,18 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest
+@Transactional
 public class TaskControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    private Task task;
 
     @MockitoBean
     private TaskService taskService;
@@ -57,6 +61,8 @@ public class TaskControllerTest {
 
     @BeforeEach
     public void setUp(){
+        task = new Task();
+
         pageable = PageRequest.of(PAGE, SIZE);
 
         taskRequest = new TaskRequest(
